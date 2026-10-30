@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#12304a">
+<title>ChemCraft Lab | Cheminformatics Virtual Laboratory</title>
+<style>
+:root{--navy:#12304a;--blue:#176b87;--cyan:#dff4f4;--bg:#f4f7fb;--ink:#1e293b;--muted:#64748b;--line:#dbe4ee;--white:#fff;--green:#147d64;--orange:#b45309}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+header{background:linear-gradient(135deg,var(--navy),var(--blue));color:white;padding:22px 16px}
+.header-inner,main{max-width:1050px;margin:auto}
+header h1{font-size:clamp(1.45rem,5vw,2.2rem);line-height:1.2;margin:0 0 8px}
+header p{margin:0;color:#e1f3f8}
+main{padding:16px}
+.profile,.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px;box-shadow:0 5px 18px #102a4308}
+.profile h2,.card h2{margin:0 0 10px;font-size:1.2rem;color:var(--navy)}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+label{display:block;font-weight:650;font-size:.92rem;margin-bottom:5px}
+input,select,textarea{width:100%;border:1px solid #bdcbd9;border-radius:10px;padding:11px;font:inherit;background:white;color:var(--ink)}
+nav{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px;margin-bottom:8px;scrollbar-width:thin}
+nav button{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:10px 14px;background:white;color:var(--navy);font-weight:700;cursor:pointer}
+nav button.active{background:var(--navy);color:white;border-color:var(--navy)}
+button.action{border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:white;font:inherit;font-weight:700;cursor:pointer}
+button.secondary{background:#e7eef5;color:var(--navy)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #78c9d5;outline-offset:2px}
+.tab{display:none}.tab.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.callout{background:#e9f7f6;border-left:4px solid var(--green);padding:12px;border-radius:8px}
+.muted{color:var(--muted)}.small{font-size:.9rem}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.pill{background:#eaf1f8;border-radius:999px;padding:5px 10px;font-size:.86rem}
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f0f5f9}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+.molecule-visual{min-height:180px;display:grid;place-items:center;background:#f8fbfd;border:1px solid var(--line);border-radius:12px;padding:12px}
+.molecule-visual svg{max-width:100%;height:auto}
+.atom{font-weight:800;font-size:16px}
+#viewer3d{height:260px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#f8fbfd}
+.notice{padding:12px;background:#fff7e6;border:1px solid #f2d6a0;border-radius:10px;color:#744210}
+.question{padding:12px 0;border-bottom:1px solid var(--line)}.question:last-child{border-bottom:0}
+.question p{margin:0 0 8px;font-weight:650}
+.result{font-weight:750;margin-top:12px}
+footer{text-align:center;color:var(--muted);padding:18px;font-size:.85rem}
+.skip-link{position:absolute;left:8px;top:-60px;background:#fff;color:#123;padding:10px 14px;z-index:9999;border-radius:8px}.skip-link:focus{top:8px}
+nav:before{content:"Navigation";display:block;flex-basis:100%;font-weight:800;color:var(--muted);padding:4px 2px}
+@media(min-width:760px){main{padding:24px}.profile,.card{padding:20px}#viewer3d{height:330px}}
+@media print{body{background:white}header,nav,.no-print,.profile{display:none!important}main{max-width:none;padding:0}.tab{display:none!important}#report-tab{display:block!important}.card{box-shadow:none;border:0;padding:0}.table-wrap{overflow:visible}button{display:none!important}}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<header><div class="header-inner">
+<h1>⛏️ ChemCraft Lab</h1>
+<p>🚗 CHEMSPORTX : Cheminformatics Lab<br><strong>EXPLORE molecules. MODIFY knowledge.</strong></p>
+</div></header>
+<main id="main-content">
+<section class="profile no-print">
+<h2>Student Details</h2>
+<div class="fields">
+<div><label for="studentName">Student name</label><input id="studentName" placeholder="Enter your name" autocomplete="name"></div>
+<div><label for="regNo">Student Registration Number</label><input id="regNo" placeholder="Enter registration number"></div>
+<div><label for="developerReg">Registration Number Of DEVELOPER :</label><input id="developerReg" value="RA2611026050161" placeholder="Enter developer registration number"></div>
+<div><label for="practicalDate">Practical date</label><input id="practicalDate" type="date"></div>
+</div>
+<p class="small muted">Enter your own details before saving the practical report.</p>
+</section>
+<nav class="no-print" aria-label="Laboratory sections">
+<button class="active" data-tab="home-tab">🏠 Home</button><button data-tab="theory-tab">📖 Theory</button><button data-tab="molecule-tab">🧬 Molecular Visualization</button><button data-tab="database-tab">🔎 100M+ Compound Search</button><button data-tab="properties-tab">📊 Molecular Properties Report</button><button data-tab="analysis-tab">📈 Structure–Property Analysis</button><button data-tab="assessment-tab">🎓 Assessment</button><button data-tab="report-tab">📄 Project Report</button>
+</nav>
+
+<section id="home-tab" class="tab active">
+<div class="card"><h2>Welcome, Crafter!</h2>
+<p>This interactive virtual laboratory helps students understand important concepts in cheminformatics and computational chemistry.</p>
+<div class="callout"><strong>🎓 WHAT THE THINGS YOU WILL LEARN ??</strong><p>Students can learn:</p><ul><li>SMILES notation</li><li>Molecular representation</li><li>2D visualization</li><li>3D visualization</li><li>Molecular descriptors</li><li>Structure-property relationships</li></ul></div>
+<h3>🧪 What can students do?</h3><ul><li>Enter any SMILES notation</li><li>Validate molecular structures using supported tools and database lookups</li><li>Generate 2D structure previews</li><li>Generate interactive 3D structures when a PubChem 3D record is available</li><li>Select different molecular visualization styles</li><li>Calculate and review molecular properties and descriptors</li><li>Compare structure–property relationships</li><li>Download molecular reports using Print / Save as PDF</li></ul>
+<p><strong>EXPLORE molecules. MODIFY knowledge.</strong></p>
+</div>
+<div class="card"><h2>Example Molecules — 30+ compounds</h2><p>Choose any example to view its formula and SMILES. For a large searchable catalogue, use the 100M+ Compound Search tab, which queries PubChem live.</p><div id="exampleMoleculeList" class="grid"></div></div>
+<div class="grid">
+<div class="card"><h2>How to use</h2><ol><li>Enter student details.</li><li>Read the Theory section.</li><li>Select a molecule in Molecule Lab.</li><li>Review properties and compare two molecules.</li><li>Complete the quiz and print your report.</li></ol></div>
+<div class="card"><h2>Important note</h2><p class="muted">This is an educational demonstration, not a substitute for a validated chemical database or laboratory safety procedures. Some values are approximate reference values. The 3D view needs an internet connection and a compatible browser.</p></div>
+</div>
+</section>
+
+<section id="theory-tab" class="tab">
+<div class="card"><h2>1. SMILES notation</h2><p>SMILES (Simplified Molecular Input Line Entry System) represents a molecule as text. Atoms are written using element symbols, while bonds and branches are represented by characters.</p><ul><li><strong>O</strong> — oxygen atom in a simple SMILES example.</li><li><strong>CC</strong> — two carbon atoms connected by a single bond (ethane).</li><li><strong>CCO</strong> — ethanol.</li><li><strong>C1CCCCC1</strong> — a six-membered carbon ring (cyclohexane).</li></ul></div>
+<div class="card"><h2>2. Molecular representations</h2><p>A 2D structure shows atoms and bonds on a flat page. A 3D model represents spatial positions and helps us think about molecular shape. A 3D model is a visual aid; the coordinates shown here are illustrative.</p></div>
+<div class="card"><h2>3. Molecular properties</h2><p>Molecular mass is the sum of atomic masses. Polarity describes uneven distribution of electrical charge. Boiling point and solubility depend on multiple factors, including intermolecular forces, molecular shape, temperature, and solvent.</p></div>
+<div class="card"><h2>4. Structure–property relationships</h2><p>Changing a molecule's atoms, functional groups, or shape can change its properties. For example, ethanol has an –OH group that can form hydrogen bonds, while methane is nonpolar. Trends must be interpreted in context rather than assumed to apply to every molecule.</p></div>
+</section>
+
+<section id="molecule-tab" class="tab">
+<div class="card">
+<h2>🧬 Molecular Visualization</h2><p>Choose an example molecule. Each entry includes a chemical formula and SMILES notation.</p>
+<div class="fields">
+<div><label for="moleculeSelect">Choose molecule</label><select id="moleculeSelect"><option value="water">Water (H₂O)</option><option value="methane">Methane (CH₄)</option><option value="ethanol" selected>Ethanol (C₂H₆O)</option><option value="aspirin">Aspirin (C₉H₈O₄)</option></select></div>
+<div><label for="viewMode">View</label><select id="viewMode"><option value="2d">2D structure</option><option value="3d">3D model (internet required)</option></select></div>
+</div>
+<div class="grid" style="margin-top:14px">
+<div><h3>Structure</h3><div id="structure2d" class="molecule-visual" aria-live="polite"></div><p id="smilesText" class="small"></p></div>
+<div><h3>3D model</h3><div id="viewer3d"></div><p id="viewerMessage" class="small muted">Select 3D model to try the interactive view.</p><button id="spinButton" class="action secondary no-print" type="button">Toggle rotation</button></div>
+</div>
+</div>
+</section>
+
+<section id="database-tab" class="tab">
+<div class="card">
+<h2>100M+ Compound Search — PubChem Live Database</h2>
+<p>Search the public PubChem chemical database by compound name, molecular formula, or PubChem CID. Results are fetched live when you search; this website does not store 100 million records locally.</p>
+<div class="fields">
+<div><label for="compoundQuery">Compound name, formula, or CID</label><input id="compoundQuery" placeholder="e.g. caffeine, C8H10N4O2, or 2519" autocomplete="off"></div>
+<div style="align-self:end"><button id="compoundSearchBtn" class="action" type="button">Search compounds</button></div>
+</div>
+<p class="small muted">Internet connection required. PubChem may limit requests or return no results for some queries. Search one compound at a time for best results.</p>
+<div id="compoundSearchStatus" class="result" aria-live="polite"></div>
+<div id="compoundSearchResults" class="grid" style="margin-top:14px"></div>
+<div class="notice small" style="margin-top:14px">Scientific note: compound records and properties come from PubChem. Always verify critical values and safety information from authoritative sources before laboratory use.</div>
+</div>
+</section>
+
+<section id="properties-tab" class="tab">
+<div class="card"><h2>📊 Molecular Properties Report</h2><label for="propertyMolecule">Choose molecule</label><select id="propertyMolecule"><option value="water">Water</option><option value="methane">Methane</option><option value="ethanol" selected>Ethanol</option><option value="aspirin">Aspirin</option></select>
+<div class="table-wrap" style="margin-top:14px"><table><tbody id="propertyTable"></tbody></table></div>
+<p class="small muted">Values are approximate educational references; verify exact values and conditions against a trusted chemical reference before formal scientific use.</p></div>
+</section>
+
+<section id="analysis-tab" class="tab">
+<div class="card"><h2>📈 Structure–Property Analysis</h2><div class="fields">
+<div><label for="compareA">First molecule</label><select id="compareA"><option value="water">Water</option><option value="methane" selected>Methane</option><option value="ethanol">Ethanol</option><option value="aspirin">Aspirin</option></select></div>
+<div><label for="compareB">Second molecule</label><select id="compareB"><option value="water">Water</option><option value="methane">Methane</option><option value="ethanol" selected>Ethanol</option><option value="aspirin">Aspirin</option></select></div>
+</div><div id="comparisonOutput" class="callout" style="margin-top:14px" aria-live="polite"></div></div>
+</section>
+
+<section id="assessment-tab" class="tab">
+<div class="card"><h2>Knowledge Check</h2><p>Choose one answer for each question, then press Check answers.</p>
+<form id="quizForm">
+<div class="question"><p>1. What does SMILES represent?</p><label><input type="radio" name="q1" value="a" style="width:auto"> A type of laboratory glassware</label><label><input type="radio" name="q1" value="b" style="width:auto"> A text representation of a molecule</label><label><input type="radio" name="q1" value="c" style="width:auto"> A temperature unit</label></div>
+<div class="question"><p>2. Which molecule contains an –OH group?</p><label><input type="radio" name="q2" value="a" style="width:auto"> Methane</label><label><input type="radio" name="q2" value="b" style="width:auto"> Ethanol</label><label><input type="radio" name="q2" value="c" style="width:auto"> Carbon dioxide</label></div>
+<div class="question"><p>3. What does a 3D molecular model help show?</p><label><input type="radio" name="q3" value="a" style="width:auto"> Spatial arrangement of atoms</label><label><input type="radio" name="q3" value="b" style="width:auto"> The student's attendance</label><label><input type="radio" name="q3" value="c" style="width:auto"> The colour of a real sample in every condition</label></div>
+<div class="question"><p>4. Molecular properties depend on:</p><label><input type="radio" name="q4" value="a" style="width:auto"> Only the molecule's name</label><label><input type="radio" name="q4" value="b" style="width:auto"> Structure and surrounding conditions</label><label><input type="radio" name="q4" value="c" style="width:auto"> Only the font used to write SMILES</label></div>
+<button type="submit" class="action">Check answers</button><button type="reset" class="action secondary">Reset quiz</button><div id="quizResult" class="result" aria-live="polite"></div>
+</form></div>
+</section>
+
+<section id="report-tab" class="tab">
+<div class="card"><h2>Project / Practical Report</h2><p>This report summarizes the activity completed in the virtual chemistry laboratory.</p>
+<div class="table-wrap"><table><tbody>
+<tr><th>Student name</th><td id="reportName">Not entered</td></tr><tr><th>Registration number</th><td id="reportReg">Not entered</td></tr><tr><th>Developer registration number</th><td id="reportDeveloperReg">Not entered</td></tr><tr><th>Practical date</th><td id="reportDate">Not entered</td></tr>
+<tr><th>Title</th><td>ChemCraft Lab: Cheminformatics, Molecular Visualization and Structure–Property Analysis</td></tr>
+<tr><th>Aim</th><td>To explore molecular representations and understand how molecular structure relates to selected chemical properties.</td></tr>
+<tr><th>Procedure</th><td>Read the theory, selected molecules, reviewed their SMILES and visual representations, examined approximate properties, compared molecules, and completed the knowledge check.</td></tr>
+<tr><th>Result</th><td id="reportResult">Quiz not completed yet.</td></tr>
+<tr><th>Conclusion</th><td>Molecular structure, functional groups, polarity, and intermolecular forces can influence chemical properties. Numerical values should be checked against trusted references.</td></tr>
+</tbody></table></div>
+<div class="no-print" style="margin-top:14px"><button id="updateReport" class="action secondary" type="button">Update report details</button> <button id="printReport" class="action" type="button">Print / Save as PDF</button></div>
+</div>
+</section>
+</main>
+<footer>🚗 CHEMSPORTX : Cheminformatics Lab<br>EXPLORE molecules. MODIFY knowledge.<br>Built by MD MAGFUR ALAM | SRMIST TRICHY<br><span class="small">Educational demonstration • PubChem search requires internet</span></footer>
+
+<script>
+(function(){
+"use strict";
+const molecules={
+ water:{name:"Water",formula:"H₂O",smiles:"O",mass:"18.02 g/mol",polarity:"Polar",bp:"100 °C (at 1 atm)",solubility:"Miscible with many polar solvents; reference solvent",group:"Bent molecule; O–H bonds",note:"Water is bent and polar, and forms extensive hydrogen bonding.",svg:'<svg viewBox="0 0 240 130" role="img" aria-label="Water structure"><line x1="82" y1="58" x2="120" y2="84" stroke="#64748b" stroke-width="4"/><line x1="120" y1="84" x2="158" y2="58" stroke="#64748b" stroke-width="4"/><circle cx="120" cy="84" r="19" fill="#e55b5b"/><circle cx="78" cy="54" r="15" fill="#f4f7fb" stroke="#9aa8b7" stroke-width="2"/><circle cx="162" cy="54" r="15" fill="#f4f7fb" stroke="#9aa8b7" stroke-width="2"/><text x="120" y="90" text-anchor="middle" fill="white" class="atom">O</text><text x="78" y="60" text-anchor="middle" fill="#334155" class="atom">H</text><text x="162" y="60" text-anchor="middle" fill="#334155" class="atom">H</text></svg>',xyz:"3\\nWater (illustrative geometry)\\nO 0.000 0.000 0.000\\nH 0.758 0.000 0.504\\nH -0.758 0.000 0.504"},
+ methane:{name:"Methane",formula:"CH₄",smiles:"C",mass:"16.04 g/mol",polarity:"Nonpolar overall",bp:"−161.5 °C (approx.)",solubility:"Very low in water",group:"Tetrahedral; C–H bonds",note:"Methane is a small, overall nonpolar molecule with weak intermolecular attractions.",svg:'<svg viewBox="0 0 240 150" role="img" aria-label="Methane schematic"><line x1="120" y1="75" x2="120" y2="25" stroke="#64748b" stroke-width="4"/><line x1="120" y1="75" x2="70" y2="108" stroke="#64748b" stroke-width="4"/><line x1="120" y1="75" x2="170" y2="108" stroke="#64748b" stroke-width="4"/><line x1="120" y1="75" x2="120" y2="132" stroke="#64748b" stroke-width="4"/><circle cx="120" cy="75" r="20" fill="#4b91d1"/><text x="120" y="81" text-anchor="middle" fill="white" class="atom">C</text><g fill="#fff" stroke="#9aa8b7" stroke-width="2"><circle cx="120" cy="20" r="14"/><circle cx="64" cy="112" r="14"/><circle cx="176" cy="112" r="14"/><circle cx="120" cy="136" r="12"/></g><g fill="#334155" class="atom" text-anchor="middle"><text x="120" y="26">H</text><text x="64" y="118">H</text><text x="176" y="118">H</text><text x="120" y="142">H</text></g></svg>',xyz:"5\\nMethane (illustrative geometry)\\nC 0.000 0.000 0.000\\nH 0.629 0.629 0.629\\nH -0.629 -0.629 0.629\\nH -0.629 0.629 -0.629\\nH 0.629 -0.629 -0.629"},
+ ethanol:{name:"Ethanol",formula:"C₂H₆O",smiles:"CCO",mass:"46.07 g/mol",polarity:"Polar",bp:"78.4 °C (approx.)",solubility:"Miscible with water",group:"Contains hydroxyl (–OH) group",note:"Ethanol's hydroxyl group allows hydrogen bonding; its carbon chain also affects its behaviour.",svg:'<svg viewBox="0 0 300 130" role="img" aria-label="Ethanol simplified structure"><line x1="55" y1="65" x2="112" y2="65" stroke="#64748b" stroke-width="4"/><line x1="132" y1="65" x2="185" y2="65" stroke="#64748b" stroke-width="4"/><line x1="205" y1="65" x2="250" y2="65" stroke="#64748b" stroke-width="4"/><circle cx="45" cy="65" r="18" fill="#4b91d1"/><circle cx="122" cy="65" r="18" fill="#4b91d1"/><circle cx="195" cy="65" r="18" fill="#e55b5b"/><circle cx="263" cy="65" r="18" fill="#fff" stroke="#9aa8b7" stroke-width="2"/><g text-anchor="middle" class="atom"><text x="45" y="71" fill="white">C</text><text x="122" y="71" fill="white">C</text><text x="195" y="71" fill="white">O</text><text x="263" y="71" fill="#334155">H</text></g><text x="150" y="112" text-anchor="middle" fill="#64748b" font-size="12">Simplified connectivity</text></svg>',xyz:"9\\nEthanol (illustrative geometry)\\nC -0.748 0.000 0.000\\nC 0.748 0.000 0.000\\nO 2.100 0.500 0.000\\nH -1.100 1.000 0.000\\nH -1.100 -0.500 0.900\\nH -1.100 -0.500 -0.900\\nH 1.100 0.900 0.000\\nH 1.100 -0.450 0.900\\nH 2.650 0.000 0.000"},
+ aspirin:{name:"Aspirin",formula:"C₉H₈O₄",smiles:"CC(=O)OC1=CC=CC=C1C(=O)O",mass:"180.16 g/mol",polarity:"Contains polar functional groups",bp:"Decomposes on strong heating; a normal boiling point is not typically used",solubility:"Limited in water; depends on conditions",group:"Ester, carboxylic acid, aromatic ring",note:"Aspirin has several functional groups; its solubility and thermal behaviour depend on conditions.",svg:'<svg viewBox="0 0 300 160" role="img" aria-label="Aspirin functional group schematic"><polygon points="110,35 145,55 145,95 110,115 75,95 75,55" fill="none" stroke="#64748b" stroke-width="3"/><text x="110" y="80" text-anchor="middle" fill="#334155" font-weight="700">Ring</text><line x1="75" y1="55" x2="42" y2="35" stroke="#64748b" stroke-width="3"/><text x="8" y="30" fill="#176b87" font-size="12" font-weight="700">COOH</text><line x1="145" y1="95" x2="180" y2="115" stroke="#64748b" stroke-width="3"/><text x="182" y="124" fill="#176b87" font-size="12" font-weight="700">OCOCH₃</text><text x="150" y="150" text-anchor="middle" fill="#64748b" font-size="11">Functional-group schematic, not a full bond drawing</text></svg>',xyz:"21\\nAspirin (rough illustrative coordinates)\\nC 0.000 0.000 0.000\\nC 1.400 0.000 0.000\\nC 2.100 1.212 0.000\\nC 1.400 2.424 0.000\\nC 0.000 2.424 0.000\\nC -0.700 1.212 0.000\\nC -2.100 1.212 0.000\\nO -2.800 2.424 0.000\\nO -2.800 0.000 0.000\\nC -4.200 0.000 0.000\\nO 2.100 -1.212 0.000\\nC 3.500 -1.212 0.000\\nO 4.200 -2.424 0.000\\nO 4.200 0.000 0.000\\nH 1.950 3.375 0.000\\nH -0.550 3.375 0.000\\nH -1.450 1.212 0.950\\nH -4.750 0.000 0.900\\nH -4.750 0.000 -0.900\\nH 3.800 -0.300 0.900\\nH 3.800 -0.300 -0.900"}
+};
+// Additional commonly studied examples. Formulae and SMILES are reference examples; verify records for formal research.
+const extraMolecules = {
+ carbon_dioxide:{name:"Carbon dioxide",formula:"CO₂",smiles:"O=C=O",mass:"44.01 g/mol",polarity:"Nonpolar overall",bp:"Sublimes at −78.5 °C (1 atm)",solubility:"Some dissolves and reacts in water",group:"Linear molecule",note:"CO₂ has polar bonds but a symmetric linear shape, so its net dipole is zero."},
+ ammonia:{name:"Ammonia",formula:"NH₃",smiles:"N",mass:"17.03 g/mol",polarity:"Polar",bp:"−33.3 °C",solubility:"Very soluble in water",group:"Trigonal pyramidal; N–H bonds",note:"Ammonia is polar and can accept hydrogen bonds."},
+ hydrogen_peroxide:{name:"Hydrogen peroxide",formula:"H₂O₂",smiles:"OO",mass:"34.01 g/mol",polarity:"Polar",bp:"Decomposes; aqueous solutions commonly used",solubility:"Miscible with water",group:"Peroxide O–O bond",note:"Hydrogen peroxide contains an O–O bond; properties depend on concentration."},
+ glucose:{name:"Glucose",formula:"C₆H₁₂O₆",smiles:"C(C1C(C(C(C(O1)O)O)O)O)O",mass:"180.16 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Soluble in water",group:"Multiple hydroxyl groups; sugar",note:"Glucose has several hydroxyl groups and is highly water soluble."},
+ fructose:{name:"Fructose",formula:"C₆H₁₂O₆",smiles:"C(C1C(C(C(O1)(CO)O)O)O)O",mass:"180.16 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Soluble in water",group:"Monosaccharide",note:"Fructose and glucose share a formula but differ in structure."},
+ sucrose:{name:"Sucrose",formula:"C₁₂H₂₂O₁₁",smiles:"C(C1C(C(C(C(O1)O)O)O)O)OC2C(C(C(C(O2)CO)O)O)O",mass:"342.30 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Highly soluble in water",group:"Disaccharide",note:"Sucrose is a disaccharide composed of glucose and fructose units."},
+ acetic_acid:{name:"Acetic acid",formula:"C₂H₄O₂",smiles:"CC(=O)O",mass:"60.05 g/mol",polarity:"Polar",bp:"118.1 °C",solubility:"Miscible with water",group:"Carboxylic acid",note:"The carboxyl group makes acetic acid polar and weakly acidic."},
+ acetone:{name:"Acetone",formula:"C₃H₆O",smiles:"CC(=O)C",mass:"58.08 g/mol",polarity:"Polar",bp:"56.1 °C",solubility:"Miscible with water",group:"Ketone carbonyl",note:"Acetone has a polar carbonyl group and is a common solvent."},
+ benzene:{name:"Benzene",formula:"C₆H₆",smiles:"c1ccccc1",mass:"78.11 g/mol",polarity:"Nonpolar",bp:"80.1 °C",solubility:"Poorly soluble in water",group:"Aromatic six-membered ring",note:"Benzene is aromatic and nonpolar; it is hazardous and should not be handled casually."},
+ toluene:{name:"Toluene",formula:"C₇H₈",smiles:"Cc1ccccc1",mass:"92.14 g/mol",polarity:"Nonpolar",bp:"110.6 °C",solubility:"Poorly soluble in water",group:"Aromatic ring with methyl group",note:"Adding a methyl group to benzene changes mass and physical properties."},
+ phenol:{name:"Phenol",formula:"C₆H₆O",smiles:"Oc1ccccc1",mass:"94.11 g/mol",polarity:"Moderately polar",bp:"181.7 °C",solubility:"Limited; depends on temperature",group:"Aromatic hydroxyl group",note:"Phenol has an –OH group attached directly to an aromatic ring."},
+ aniline:{name:"Aniline",formula:"C₆H₇N",smiles:"Nc1ccccc1",mass:"93.13 g/mol",polarity:"Moderately polar",bp:"184.1 °C",solubility:"Limited in water",group:"Aromatic amine",note:"Aniline contains an amino group attached to an aromatic ring."},
+ urea:{name:"Urea",formula:"CH₄N₂O",smiles:"NC(=O)N",mass:"60.06 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Highly soluble in water",group:"Amide-like carbonyl with two amino groups",note:"Urea is polar and forms hydrogen bonds."},
+ glycine:{name:"Glycine",formula:"C₂H₅NO₂",smiles:"NCC(=O)O",mass:"75.07 g/mol",polarity:"Polar; zwitterionic in common conditions",bp:"Decomposes on heating",solubility:"Soluble in water",group:"Simplest amino acid",note:"Glycine contains amino and carboxyl groups."},
+ alanine:{name:"Alanine",formula:"C₃H₇NO₂",smiles:"CC(N)C(=O)O",mass:"89.09 g/mol",polarity:"Polar; zwitterionic in common conditions",bp:"Decomposes on heating",solubility:"Soluble in water",group:"Amino acid with methyl side chain",note:"Alanine differs from glycine by one methyl side chain."},
+ lactic_acid:{name:"Lactic acid",formula:"C₃H₆O₃",smiles:"CC(O)C(=O)O",mass:"90.08 g/mol",polarity:"Polar",bp:"Decomposes / depends on pressure",solubility:"Miscible with water",group:"Hydroxy carboxylic acid",note:"Lactic acid contains both hydroxyl and carboxyl groups."},
+ citric_acid:{name:"Citric acid",formula:"C₆H₈O₇",smiles:"C(C(=O)O)C(CC(=O)O)(C(=O)O)O",mass:"192.12 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Highly soluble in water",group:"Three carboxyl groups and one hydroxyl",note:"Citric acid has multiple acidic and hydroxyl groups."},
+ caffeine:{name:"Caffeine",formula:"C₈H₁₀N₄O₂",smiles:"Cn1c(=O)c2c(ncn2C)n(C)c1=O",mass:"194.19 g/mol",polarity:"Moderately polar",bp:"Sublimes / decomposes at high temperature",solubility:"Solubility increases with temperature",group:"Nitrogen-containing heterocyclic compound",note:"Caffeine is a common example for database search and molecular descriptors."},
+ ibuprofen:{name:"Ibuprofen",formula:"C₁₃H₁₈O₂",smiles:"CC(C)CC1=CC=C(C=C1)C(C)C(=O)O",mass:"206.28 g/mol",polarity:"Contains polar carboxyl group; mostly hydrophobic",bp:"Decomposes at high temperature",solubility:"Poorly soluble in water",group:"Aromatic ring and carboxylic acid",note:"Ibuprofen combines a hydrophobic aromatic region with a carboxylic acid group."},
+ paracetamol:{name:"Paracetamol (acetaminophen)",formula:"C₈H₉NO₂",smiles:"CC(=O)NC1=CC=C(C=C1)O",mass:"151.16 g/mol",polarity:"Polar functional groups",bp:"Decomposes on heating",solubility:"Moderately soluble in water",group:"Phenol and amide groups",note:"Paracetamol contains phenol and amide functional groups."},
+ salicylic_acid:{name:"Salicylic acid",formula:"C₇H₆O₃",smiles:"O=C(O)c1ccccc1O",mass:"138.12 g/mol",polarity:"Polar",bp:"Decomposes on heating",solubility:"Limited in cold water",group:"Aromatic carboxylic acid and phenol",note:"Salicylic acid has adjacent carboxylic acid and hydroxyl groups on a ring."},
+ ethane:{name:"Ethane",formula:"C₂H₆",smiles:"CC",mass:"30.07 g/mol",polarity:"Nonpolar",bp:"−88.6 °C",solubility:"Very low in water",group:"Saturated hydrocarbon",note:"Ethane is a simple alkane with a single carbon–carbon bond."},
+ ethylene:{name:"Ethene (ethylene)",formula:"C₂H₄",smiles:"C=C",mass:"28.05 g/mol",polarity:"Nonpolar",bp:"−103.7 °C",solubility:"Very low in water",group:"Alkene with C=C double bond",note:"Ethene contains a carbon–carbon double bond."},
+ propene:{name:"Propene",formula:"C₃H₆",smiles:"CC=C",mass:"42.08 g/mol",polarity:"Nonpolar",bp:"−47.6 °C",solubility:"Very low in water",group:"Three-carbon alkene",note:"Propene is an unsaturated hydrocarbon."},
+ propane:{name:"Propane",formula:"C₃H₈",smiles:"CCC",mass:"44.10 g/mol",polarity:"Nonpolar",bp:"−42.1 °C",solubility:"Very low in water",group:"Saturated hydrocarbon",note:"Propane is a three-carbon alkane."},
+ butane:{name:"Butane",formula:"C₄H₁₀",smiles:"CCCC",mass:"58.12 g/mol",polarity:"Nonpolar",bp:"−0.5 °C (n-butane approx.)",solubility:"Very low in water",group:"Four-carbon alkane",note:"Butane is a nonpolar hydrocarbon with stronger dispersion forces than smaller alkanes."},
+ formaldehyde:{name:"Formaldehyde (methanal)",formula:"CH₂O",smiles:"C=O",mass:"30.03 g/mol",polarity:"Polar",bp:"−19 °C (pure compound reference; commonly aqueous solution)",solubility:"Very soluble in water",group:"Aldehyde carbonyl",note:"Formaldehyde is a small polar aldehyde; concentrated solutions require strict safety controls."},
+ chloroform:{name:"Chloroform",formula:"CHCl₃",smiles:"C(Cl)(Cl)Cl",mass:"119.38 g/mol",polarity:"Moderately polar",bp:"61.2 °C",solubility:"Limited in water",group:"Halogenated methane",note:"Chloroform is a hazardous solvent; this entry is for theory only."},
+ ethyl_acetate:{name:"Ethyl acetate",formula:"C₄H₈O₂",smiles:"CCOC(=O)C",mass:"88.11 g/mol",polarity:"Moderately polar",bp:"77.1 °C",solubility:"Limited in water",group:"Ester functional group",note:"Ethyl acetate is an ester commonly discussed as a solvent."}
+};
+for (const [key, item] of Object.entries(extraMolecules)) {
+ item.svg = '<div style="text-align:center;max-width:100%;overflow-wrap:anywhere"><div style="font-size:1.6rem;font-weight:800;color:#176b87">'+item.formula+'</div><p><strong>'+item.name+'</strong></p><p class="small">2D schematic preview: use the SMILES below or open PubChem for a full structure drawing.</p></div>';
+ item.xyz = null;
+ molecules[key] = item;
+}
+const $=id=>document.getElementById(id);
+let viewer=null, spinning=false, lastScore=null;
+function populateMoleculeMenus(){
+ const menuIds=['moleculeSelect','propertyMolecule','compareA','compareB'];
+ const keys=Object.keys(molecules);
+ menuIds.forEach((id,idx)=>{const el=$(id);const old=el.value;el.innerHTML=keys.map(k=>'<option value="'+k+'">'+escapeHtml(molecules[k].name)+' ('+escapeHtml(molecules[k].formula)+')</option>').join('');el.value=keys.includes(old)?old:(idx===2?'methane':idx===3?'ethanol':'ethanol');});
+ const list=$('exampleMoleculeList');
+ if(list) list.innerHTML=keys.map(k=>{const m=molecules[k];return '<article class="card"><h3>'+escapeHtml(m.name)+'</h3><div class="pills"><span class="pill">'+escapeHtml(m.formula)+'</span><span class="pill">'+escapeHtml(m.mass)+'</span></div><p><strong>SMILES</strong></p><p class="small" style="overflow-wrap:anywhere">'+escapeHtml(m.smiles)+'</p><button type="button" class="action secondary" data-example="'+k+'">Explore molecule</button></article>';}).join('');
+ list?.querySelectorAll('[data-example]').forEach(btn=>btn.addEventListener('click',()=>{const key=btn.dataset.example;$('moleculeSelect').value=key;activateTab('molecule-tab');}));
+}
+populateMoleculeMenus();
+function activateTab(id){document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.id===id));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));if(id==='molecule-tab')renderMolecule();if(id==='properties-tab')renderProperties();if(id==='analysis-tab')renderComparison();if(id==='report-tab')updateReport();}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>activateTab(b.dataset.tab)));
+async function searchPubChem(){
+ const query=$('compoundQuery').value.trim();
+ const status=$('compoundSearchStatus'), results=$('compoundSearchResults');
+ if(!query){status.textContent='Please enter a compound name, molecular formula, or PubChem CID.';results.innerHTML='';return;}
+ status.textContent='Searching PubChem…';results.innerHTML='';$('compoundSearchBtn').disabled=true;
+ try{
+  let cids=[];
+  const isFormula=/^(?=.*[A-Z])[A-Z][A-Za-z0-9().+\-]*$/.test(query) && /[0-9]/.test(query) && !/^\d+$/.test(query);
+  const isCid=/^\d+$/.test(query);
+  let idsUrl;
+  if(isCid){cids=[query];}
+  else if(isFormula){idsUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/fastformula/'+encodeURIComponent(query)+'/cids/JSON?MaxRecords=20';}
+  else{idsUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'+encodeURIComponent(query)+'/cids/JSON';}
+  if(idsUrl){
+   const r=await fetch(idsUrl);if(!r.ok)throw new Error(r.status===404?'No matching compounds found. Try a different name or formula.':'PubChem search returned HTTP '+r.status+'. Please try again.');
+   const data=await r.json();cids=(data.IdentifierList&&data.IdentifierList.CID)||[];
+  }
+  cids=[...new Set(cids.map(String))].slice(0,20);
+  if(!cids.length)throw new Error('No matching compounds found. Try a common name such as caffeine or aspirin.');
+  status.textContent='Found '+cids.length+' matching record(s). Loading compound properties…';
+  const propUrl='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/'+cids.join(',')+'/property/MolecularFormula,MolecularWeight,IUPACName,CanonicalSMILES,IsomericSMILES/JSON';
+  const pr=await fetch(propUrl);if(!pr.ok)throw new Error('Compound IDs were found, but properties could not be loaded. Please try again.');
+  const pd=await pr.json();const rows=(pd.PropertyTable&&pd.PropertyTable.Properties)||[];
+  if(!rows.length)throw new Error('PubChem returned no property records for this query.');
+  results.innerHTML=rows.map((x)=>{
+   const name=x.IUPACName||('PubChem compound CID '+x.CID);
+   const formula=x.MolecularFormula||'Not available';
+   const mw=x.MolecularWeight!==undefined?x.MolecularWeight+' g/mol':'Not available';
+   const smiles=x.IsomericSMILES||x.CanonicalSMILES||'Not available';
+   const cid=String(x.CID);
+   return '<article class="card"><h3>'+escapeHtml(name)+'</h3><div class="pills"><span class="pill">CID: '+escapeHtml(cid)+'</span><span class="pill">Formula: '+escapeHtml(formula)+'</span><span class="pill">Molecular weight: '+escapeHtml(mw)+'</span></div><p><strong>SMILES</strong></p><p class="small" style="overflow-wrap:anywhere">'+escapeHtml(smiles)+'</p><p><a href="https://pubchem.ncbi.nlm.nih.gov/compound/'+encodeURIComponent(cid)+'" target="_blank" rel="noopener noreferrer">Open full PubChem record ↗</a></p></article>';
+  }).join('');
+  status.textContent='Search complete. Showing up to '+rows.length+' result(s) from PubChem.';
+ }catch(err){status.textContent=err.message||'Could not reach PubChem. Check your internet connection and try again.';results.innerHTML='';}
+ finally{$('compoundSearchBtn').disabled=false;}
+}
+$('compoundSearchBtn').addEventListener('click',searchPubChem);
+$('compoundQuery').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchPubChem();}});
+function safeText(id,value){$(id).textContent=value||'Not entered';}
+function renderMolecule(){
+ const m=molecules[$('moleculeSelect').value];$('structure2d').innerHTML=m.svg;$('smilesText').textContent='SMILES: '+m.smiles;
+ const wants3d=$('viewMode').value==='3d';$('structure2d').style.display=wants3d?'none':'grid';$('viewer3d').style.display=wants3d?'block':'none';$('spinButton').style.display=wants3d?'inline-block':'none';
+ if(wants3d)load3D(m);else $('viewerMessage').textContent='Select 3D model to try the interactive view.';
+}
+async function load3D(m){
+ const box=$('viewer3d');
+ if(!window.$3Dmol){$('viewerMessage').textContent='3D library did not load. Check your internet connection. The 2D structure and other sections still work.';box.innerHTML='<div class="notice">3D view needs internet access to load the viewer library.</div>';return;}
+ try{
+  box.innerHTML='';viewer=$3Dmol.createViewer(box,{backgroundColor:'#f8fbfd'});
+  if(m.xyz){viewer.addModel(m.xyz,'xyz');$('viewerMessage').textContent='Illustrative 3D coordinates for learning; not a validated optimized geometry.';}
+  else {
+   $('viewerMessage').textContent='Fetching a 3D record from PubChem…';
+   const url='https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'+encodeURIComponent(m.name)+'/record/SDF?record_type=3d';
+   const response=await fetch(url);if(!response.ok)throw new Error('No 3D record was available for this example. Try PubChem Search for a full record.');
+   const sdf=await response.text();viewer.addModel(sdf,'sdf');$('viewerMessage').textContent='3D structure loaded from PubChem. Inspect the linked record for source details.';
+  }
+  viewer.setStyle({}, {stick:{radius:0.13},sphere:{scale:0.28}});viewer.zoomTo();viewer.render();spinning=false;$('spinButton').textContent='Start rotation';
+ }catch(e){viewer=null;$('viewerMessage').textContent=e.message||'Could not display 3D view. Use 2D view or open this compound in PubChem.';box.innerHTML='<div class="notice">3D model is not available for this molecule right now. Search it in the 100M+ PubChem tab to open the full record.</div>';}
+}
+function renderProperties(){
+ const m=molecules[$('propertyMolecule').value];const rows=[['Molecule',m.name],['Molecular formula',m.formula],['SMILES',m.smiles],['Molar mass (approx.)',m.mass],['Polarity',m.polarity],['Boiling point / thermal behaviour',m.bp],['Water solubility',m.solubility],['Structural feature',m.group]];
+ $('propertyTable').innerHTML=rows.map(r=>'<tr><th>'+escapeHtml(r[0])+'</th><td>'+escapeHtml(r[1])+'</td></tr>').join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function renderComparison(){
+ const a=molecules[$('compareA').value],b=molecules[$('compareB').value];let message;
+ if(a.name===b.name)message='You selected the same molecule twice. Choose two different molecules to compare their structural features.';
+ else message=a.name+': '+a.formula+'; '+a.polarity.toLowerCase()+'. Structural feature: '+a.group+'. '+b.name+': '+b.formula+'; '+b.polarity.toLowerCase()+'. Structural feature: '+b.group+'. '+a.note+' '+b.note+' These are qualitative observations; compare properties under the same conditions.';
+ $('comparisonOutput').textContent=message;
+}
+function updateReport(){
+ safeText('reportName',$('studentName').value.trim());safeText('reportReg',$('regNo').value.trim());safeText('reportDeveloperReg',$('developerReg').value.trim());safeText('reportDate',$('practicalDate').value);
+ $('reportResult').textContent=lastScore===null?'Quiz not completed yet.':'Quiz score: '+lastScore+'/4.';
+}
+['studentName','regNo','developerReg','practicalDate'].forEach(id=>$(id).addEventListener('input',updateReport));
+$('moleculeSelect').addEventListener('change',renderMolecule);$('viewMode').addEventListener('change',renderMolecule);
+$('propertyMolecule').addEventListener('change',renderProperties);$('compareA').addEventListener('change',renderComparison);$('compareB').addEventListener('change',renderComparison);
+$('spinButton').addEventListener('click',()=>{if(!viewer){$('viewerMessage').textContent='The 3D viewer is not available yet.';return;}spinning=!spinning;try{viewer.spin(spinning?'y':false);$('spinButton').textContent=spinning?'Stop rotation':'Start rotation';}catch(e){spinning=false;$('viewerMessage').textContent='Rotation is not supported in this viewer; you can still inspect the 3D model.';}});
+$('quizForm').addEventListener('submit',e=>{e.preventDefault();const answers={q1:'b',q2:'b',q3:'a',q4:'b'};let score=0;Object.keys(answers).forEach(q=>{const selected=document.querySelector('input[name="'+q+'"]:checked');if(selected&&selected.value===answers[q])score++;});lastScore=score;$('quizResult').textContent='Your score: '+score+'/4. '+(score===4?'Excellent work!':'Review the Theory section and try again.');updateReport();});
+$('quizForm').addEventListener('reset',()=>{lastScore=null;$('quizResult').textContent='';updateReport();});
+$('updateReport').addEventListener('click',updateReport);$('printReport').addEventListener('click',()=>{updateReport();window.print();});
+function loadScript(){
+ const s=document.createElement('script');s.src='https://3dmol.org/build/3Dmol-min.js';s.async=true;s.onload=()=>{if($('viewMode').value==='3d')renderMolecule();};s.onerror=()=>{$('viewerMessage').textContent='3D library could not load. Check internet; 2D mode still works.';};document.head.appendChild(s);
+}
+$('practicalDate').value=new Date().toISOString().slice(0,10);
+renderProperties();renderComparison();updateReport();loadScript();
+})();
+</script>
+</body>
+</html>
